@@ -15,7 +15,7 @@ def kaito(a):
     if a in ans01[i]:
         print("正解！！！")
     else:
-        print("出直してこい")
+        print("出直してきやがりませ")
     ed = datetime.datetime.now()
     x = str((ed-st).seconds)
     print("回答時間" + x + "秒")
