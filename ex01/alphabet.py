@@ -30,10 +30,11 @@ def shutudai():
         else:
             print("不正解です。二度と間違えんな。")
 
-    while count < 2:
-        toi02 = input("１つ目の文字数を入力してください")
-        toi03 = input("２つ目の文字数を入力してください")
-        if (toi02 == k_mozi_list[0] and toi03 == k_mozi_list[1]) or (toi02 == k_mozi_list[1] and toi03 == k_mozi_list[0]):
+    while count < k_mozi:
+        x = [] * k_mozi
+        for i in range(k_mozi):
+            x[i] = input(str(i + 1) +"つ目の文字数を入力してください")
+        if x in k_mozi_list:
             print("おめでとう君が神だ")
             count += 1
         else:
