@@ -10,9 +10,9 @@ def key_up(event):
     global key
     key = ""
 
-def change_chicken(event):
+def change_chicken(event):  #画像フォルダにある画像を入れ替える関数
     global tori,cx,cy,a,i
-    i = (i + 1) % 11
+    i = (i + 1) % 11        #画像番号をクリックするごとに＋１して画像を入れ替える
     a = f"fig/{i}.png"
     
 
