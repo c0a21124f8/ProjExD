@@ -3,43 +3,35 @@ import tkinter.messagebox as tkm
 import maze_maker as mm
 
 def key_down(event):
-    global key,tori
+    global key
     key = event.keysym
-    
-
 
 def key_up(event):
     global key
     key = ""
 
-def main_proc():
-    global cx, cy, mx, my
-    #if key == "":
-    #    cx += 0
-    #elif key == "Up":
-    #    cy -= 20
-    #elif key == "Down":
-    #    cy += 20
-    #elif key == "Left":
-    #    cx -= 20
-    #elif key == "Right":
-    #    cx += 20
+def change_chicken(event):
+    global tori,cx,cy,a,i
+    i = (i + 1) % 11
+    a = f"fig/{i}.png"
+    
 
+def main_proc():
+    global cx, cy, mx, my,a,tori,i
     delta = {"Up":[0,-1],"Down":[0,+1],"Left":[-1,0],"Right":[+1,0]}
     try:
         if maze_bg[my+delta[key][1]][mx+delta[key][0]] == 0:
             my,mx = my + delta[key][1], mx + delta[key][0]
     except:
         pass
-    #if maze_bg[cx + mx * 100+50][cx + my*100+50] == 0:
 
-    #if key == "Up": my -= 1
-    #if key == "Down": my += 1
-    #if key == "Left": mx -= 1
-    #if key == "Right": mx += 1
     cx, cy = mx * 100+50, my*100+50
+    tori = tk.PhotoImage(file= a)
+    canvas.create_image(cx, cy, image=tori, tag = "tori")
     canvas.coords("tori",cx,cy)
+    
     root.after(100,main_proc)
+
 
 
 
@@ -51,9 +43,10 @@ if __name__ == "__main__":
     canvas.pack()
     maze_bg = mm.make_maze(15,9)
     mm.show_maze(canvas,maze_bg) # 1:壁/0:床を表す二次元リスト
-    #print(maze_bg)
 
-    tori = tk.PhotoImage(file= "fig/8.png")
+    a = "fig/8.png"
+    tori = tk.PhotoImage(file= a)
+    i = 8
     mx, my = 1, 1
     cx, cy = mx * 100+50, my*100+50
     canvas.create_image(cx, cy, image=tori, tag = "tori")
@@ -61,6 +54,7 @@ if __name__ == "__main__":
     key = ""
     root.bind("<KeyPress>", key_down)
     root.bind("<KeyRelease>", key_up)
+    root.bind("<1>",change_chicken)
     main_proc()
     root.mainloop()
 
