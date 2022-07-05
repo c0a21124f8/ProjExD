@@ -12,7 +12,7 @@ def main():
     screen_sfc.blit(beimg_sfc,beimg_rct)
 
     #焼き鳥
-    kkimg_sfc = pg.image.load("fig/20.png")     #Surface
+    kkimg_sfc = pg.image.load("fig/2.png")     #Surface
     kkimg_sfc = pg.transform.rotozoom(kkimg_sfc,0,2.0)
     kkimg_rct = kkimg_sfc.get_rect()            #Rect
     kkimg_rct.center = 900,400
@@ -60,6 +60,10 @@ def main():
         yoko, tate = check_bound(bmimg_rct, beimg_rct)
         vx *= yoko
         vy *= tate
+
+        if kkimg_rct.colliderect(bmimg_rct):
+            return
+
         pg.display.update()
         clock.tick(1000)
     
