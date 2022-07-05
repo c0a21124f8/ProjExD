@@ -28,7 +28,7 @@ def main():
 
     while True:
         screen_sfc.blit(beimg_sfc,beimg_rct)
-        screen_sfc.blit(kkimg_sfc,kkimg_rct)
+
 
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -43,13 +43,35 @@ def main():
             kkimg_rct.centerx -= 1
         if key_states[pg.K_RIGHT] == True:#ｘ座標を+1
             kkimg_rct.centerx += 1
+        if check_bound(kkimg_rct, beimg_rct) != (1, 1):
+            if key_states[pg.K_UP] == True:   #ｙ座標を-1
+                kkimg_rct.centery += 1
+            if key_states[pg.K_DOWN] == True: #ｙ座標を+1
+                kkimg_rct.centery -= 1
+            if key_states[pg.K_LEFT] == True: #ｘ座標を-1
+                kkimg_rct.centerx += 1
+            if key_states[pg.K_RIGHT] == True:#ｘ座標を+1
+                kkimg_rct.centerx -= 1
+        screen_sfc.blit(kkimg_sfc,kkimg_rct)
 
         bmimg_rct.move_ip(vx, vy)
 
         screen_sfc.blit(bmimg_sfc,bmimg_rct)
-
+        yoko, tate = check_bound(bmimg_rct, beimg_rct)
+        vx *= yoko
+        vy *= tate
         pg.display.update()
         clock.tick(1000)
+    
+def check_bound(rct,scr_rct):
+    #[１]　rct:　こうかとん　or　爆弾のRect
+    #[２]　scr_rct:　スクリーンのRect
+    yoko,  tate = +1, +1   #領域内
+    if rct.left < scr_rct.left or scr_rct.right < rct.right:
+        yoko = -1          #領域外
+    if rct.top < scr_rct.top or scr_rct.bottom < rct.bottom:
+        tate = -1          #領域外
+    return yoko, tate
 
 if __name__ == "__main__":
     pg.init()
