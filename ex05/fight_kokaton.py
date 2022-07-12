@@ -93,7 +93,23 @@ class Bomb():
         self.blit(scr)
 
 
+class Score(self,score):
+    def __init__(self):
+        self.font = pg.font.Font(None, 20)
+        self.font.set_italic(1)
+        self.color = (255, 0, 0)
+        self.lastscore = -1
+        self.update()
+        self.rect = self.image.get_rect().move(10, 450)
+
+    def update(self):
+        if self.score != self.lastscore:
+            self.lastscore = self.score
+            msg = "Score: %d" 
+            self.image = self.font.render(msg, 0, self.color)
+
 def main():
+    score = 0 #スコアの初期値
     a = 6     #こうかとんの画像の番号の初期値
     mode = 1  #矢印キーそうさとマウス操作を入れ替える変数（初期値は矢印キー操作）
     clock = pg.time.Clock()
