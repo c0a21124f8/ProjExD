@@ -1,6 +1,8 @@
 import pygame as pg
 import sys
 import random
+import tkinter as tk
+import tkinter.messagebox as tkm
 
 class Screen:
     def __init__(self, title, wh, image):
@@ -23,9 +25,8 @@ class Bird():
     
     def blit(self, scr: Screen):
         scr.sfc.blit(self.sfc, self.rct)
-        # screen_sfc.blit(self.sfc, self.rct)
 
-    def update(self, scr: Screen):
+    def update(self, scr: Screen): #矢印キー操作モード
         key_states = pg.key.get_pressed() # 辞書
         if key_states[pg.K_UP]:
             self.rct.centery -= 1
@@ -35,7 +36,6 @@ class Bird():
             self.rct.centerx -= 1
         if key_states[pg.K_RIGHT]:
             self.rct.centerx += 1
-        # 練習7
         if check_bound(self.rct, scr.rct) != (1, 1): # 領域外だったら
             if key_states[pg.K_UP]:
                 self.rct.centery += 1
@@ -46,7 +46,31 @@ class Bird():
             if key_states[pg.K_RIGHT]:
                 self.rct.centerx -= 1
         self.blit(scr)
+    
+    def mouse_move(self, r, scr:Screen): #マウス操作モード(rはマウスの座標)
+        self.rct.center = r      #こうかとんの座標を更新する
+        self.blit(scr)           #更新
 
+    def attack(self):
+        return Shot(self)
+
+
+class Shot:
+    def __init__(self, chr: Bird):
+        self.sfc = pg.image.load("fig/beams_long.png")
+        self.sfc = pg.transform.rotozoom(self.sfc, 0, 0.05)
+        self.rct = self.sfc.get_rect()
+        self.rct.center = chr.rct.midright
+
+    def blit(self, scr: Screen):
+        scr.sfc.blit(self.sfc, self.rct)
+    
+    def update(self, scr:Screen):
+        self.rct.move_ip(+10, 0) #右方向に速度１で移動する
+        self.blit(scr)
+        if check_bound(self.rct, scr.rct) != (1,1): #領域外に出たら、インスタンスを消す
+            del self
+        
 
 class Bomb():
     def __init__(self, color, size, vxy, scr: Screen):
@@ -62,93 +86,63 @@ class Bomb():
         scr.sfc.blit(self.sfc, self.rct)
 
     def update(self, scr:Screen):
-        #練習6
         self.rct.move_ip(self.vx, self.vy)
-        # 練習7
         yoko, tate = check_bound(self.rct, scr.rct)
         self.vx *= yoko
         self.vy *= tate
-        # 練習5
         self.blit(scr)
 
 
 def main():
+    a = 6     #こうかとんの画像の番号の初期値
+    mode = 1  #矢印キーそうさとマウス操作を入れ替える変数（初期値は矢印キー操作）
     clock = pg.time.Clock()
-
-    # 練習1：スクリーンと背景画像
-    # pg.display.set_caption("逃げろ！こうかとん")
-    # screen_sfc = pg.display.set_mode((1600, 900)) # Surface
-    # screen_rct = screen_sfc.get_rect()            # Rect
-    # bgimg_sfc = pg.image.load("fig/pg_bg.jpg")    # Surface
-    # bgimg_rct = bgimg_sfc.get_rect()              # Rect
-    # screen_sfc.blit(bgimg_sfc, bgimg_rct)
     scr = Screen("逃げろ！ファミチキ！", (1600, 900), "fig/pg_bg.jpg")
-
-    # 練習3：こうかとん
-    # kkimg_sfc = pg.image.load("fig/6.png")    # Surface
-    # kkimg_sfc = pg.transform.rotozoom(kkimg_sfc, 0, 2.0)  # Surface
-    # kkimg_rct = kkimg_sfc.get_rect()          # Rect
-    # kkimg_rct.center = 900, 400
-    kkt = Bird("fig/6.png", 2.0, (900, 400))
-
-    # 練習5：爆弾
-    # bmimg_sfc = pg.Surface((20, 20)) # Surface
-    # bmimg_sfc.set_colorkey((0, 0, 0)) 
-    # pg.draw.circle(bmimg_sfc, (255, 0, 0), (10, 10), 10)
-    # bmimg_rct = bmimg_sfc.get_rect() # Rect
-    # bmimg_rct.centerx = random.randint(0, screen_rct.width)
-    # bmimg_rct.centery = random.randint(0, screen_rct.height)
-    # vx, vy = +1, +1 # 練習6
+    kkt = Bird(f"fig/{a}.png", 2.0, (900, 400))
     bkd = Bomb((255, 0, 0), 10, (+1, +1), scr)
+    beams = None
 
     while True:
-        # screen_sfc.blit(bgimg_sfc, bgimg_rct)
         scr.blit()
-
-        # 練習2
         for event in pg.event.get():
             if event.type == pg.QUIT: return
-
-        # 練習4
-        # key_states = pg.key.get_pressed() # 辞書
-        # if key_states[pg.K_UP]    == True: kkimg_rct.centery -= 1
-        # if key_states[pg.K_DOWN]  == True: kkimg_rct.centery += 1
-        # if key_states[pg.K_LEFT]  == True: kkimg_rct.centerx -= 1
-        # if key_states[pg.K_RIGHT] == True: kkimg_rct.centerx += 1
-        ## 練習7
-        # if check_bound(kkimg_rct, screen_rct) != (1, 1): # 領域外だったら
-        #     if key_states[pg.K_UP]    == True: kkimg_rct.centery += 1
-        #     if key_states[pg.K_DOWN]  == True: kkimg_rct.centery -= 1
-        #     if key_states[pg.K_LEFT]  == True: kkimg_rct.centerx += 1
-        #     if key_states[pg.K_RIGHT] == True: kkimg_rct.centerx -= 1
-        # screen_sfc.blit(kkimg_sfc, kkimg_rct)
-        kkt.update(scr)
-
-        # 練習6
-        # bmimg_rct.move_ip(vx, vy)
-        # # 練習5
-        # screen_sfc.blit(bmimg_sfc, bmimg_rct)
-        # # 練習7
-        # yoko, tate = check_bound(bmimg_rct, screen_rct)
-        # vx *= yoko
-        # vy *= tate
+            if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:   #クリックするとスキンを変更する
+                x, y = kkt.rct.center                         #現在地を格納する
+                a = (a + 1) % 11                              #1-10の画像番号を順に表示する
+                kkt = Bird(f"fig/{a}.png", 2.0, (x, y))       #番号に対応した画像をこうかとんの位置で更新する
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_2:  
+                    mode = 2             #２のキーをクリックするとマウス移動モードに変更
+                if event.key == pg.K_1:  
+                    mode = 1             #１のキーをクリックすると十字キー移動モードに変更
+                if event.key == pg.K_SPACE:
+                    beams = kkt.attack() #スペースキーが押されたらこうかとんがBEAMSを撃つ
+                    
+        if mode == 1:
+            kkt.update(scr)
+        if mode == 2:
+            r = pg.mouse.get_pos()  #マウスの座標を格納
+            kkt = Bird(f"fig/{a}.png", 2.0, r)   #こうかとんの位置を格納した座標に変更する
+            kkt.mouse_move(r, scr)
+        
         bkd.update(scr)
 
-        # 練習8
-        # if kkimg_rct.colliderect(bmimg_rct): return 
+        if beams:
+            beams.update(scr)
+            if beams.rct.colliderect(bkd.rct):
+                tkm.showinfo("おめでとう！", "ゲームクリア！") #ビームが出ている時に的に命中するとゲームクリアのテロップを表示する
+                return    #テロップを表示した後ゲームを終了する
+        
         if kkt.rct.colliderect(bkd.rct):
             return
 
         pg.display.update()
         clock.tick(1000)
 
-# 練習7
+
 def check_bound(rct, scr_rct):
-    '''
-    [1] rct: こうかとん or 爆弾のRect
-    [2] scr_rct: スクリーンのRect
-    '''
     yoko, tate = +1, +1 # 領域内
+
     if rct.left < scr_rct.left or scr_rct.right  < rct.right : yoko = -1 # 領域外
     if rct.top  < scr_rct.top  or scr_rct.bottom < rct.bottom: tate = -1 # 領域外
     return yoko, tate
