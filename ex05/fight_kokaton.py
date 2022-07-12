@@ -16,7 +16,7 @@ class Screen:
         self.sfc.blit(self.bgi_sfc,self.bgi_rct)
 
 
-class Bird():
+class Bird:
     def __init__(self, image: str, size: float, xy):
         self.sfc = pg.image.load(image)    # Surface
         self.sfc = pg.transform.rotozoom(self.sfc, 0, size)  # Surface
