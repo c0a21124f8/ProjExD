@@ -99,7 +99,6 @@ class Score(self,score):
         self.font.set_italic(1)
         self.color = (255, 0, 0)
         self.lastscore = -1
-        self.update()
         self.rect = self.image.get_rect().move(10, 450)
 
     def update(self):
