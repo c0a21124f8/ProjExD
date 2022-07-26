@@ -46,7 +46,7 @@ class Ball(pygame.sprite.Sprite):
         self.rect.bottom = self.paddle.rect.top
 
         # 左クリックでボール射出
-        if pygame.mouse.get_pressed()[0] == 1:
+        if pygame.mouse.get_pressed()[0]:
             self.dx = 0
             self.dy = -self.speed
             self.update = self.move
